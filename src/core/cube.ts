@@ -1,16 +1,12 @@
-/**
- * The .cube file format (Adobe / Resolve 3D LUT spec).
- *
- * It is plain text, which is why every editor supports it:
- *
- *   TITLE "Warm Film"
- *   LUT_3D_SIZE 33
- *   DOMAIN_MIN 0 0 0
- *   DOMAIN_MAX 1 1 1
- *   0.000000 0.000000 0.000000     <- output for input (r=0, g=0, b=0)
- *   0.031250 0.000000 0.000000     <- red changes fastest
- *   ...                            <- 33^3 = 35,937 lines in total
- */
+// The Adobe/Resolve .cube format. Plain text:
+//
+//   TITLE "Warm Film"
+//   LUT_3D_SIZE 33
+//   DOMAIN_MIN 0 0 0
+//   DOMAIN_MAX 1 1 1
+//   0.000000 0.000000 0.000000     <- output for input (0, 0, 0)
+//   0.031250 0.000000 0.000000     <- red changes fastest
+//   ...                            <- 33^3 = 35,937 rows
 
 import type { Lut3D } from "./lut.ts";
 import type { RGB } from "./params.ts";
@@ -68,7 +64,7 @@ export function parseCube(text: string): CubeFile {
     } else if (/^[-+.\d]/.test(keyword)) {
       values.push(...parseTriplet([keyword, ...rest], i + 1));
     }
-    // Unknown keywords (e.g. LUT_3D_INPUT_RANGE from other tools) are ignored, as the spec allows.
+    // Other keywords (e.g. LUT_3D_INPUT_RANGE) are ignored, as the spec allows.
   }
 
   if (size === 0) throw new Error("Missing LUT_3D_SIZE");

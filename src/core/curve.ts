@@ -1,12 +1,6 @@
-/**
- * Monotone cubic spline (Fritsch-Carlson, 1980).
- *
- * A normal smooth spline through curve points can "overshoot": drag one
- * point up and the curve bulges past its neighbors, which in a grade shows
- * up as banding or tones flipping order. Fritsch-Carlson limits the slope at
- * each point so every segment stays between its two endpoints. If your points
- * go up, the curve goes up; it never wiggles.
- */
+// Monotone cubic spline (Fritsch-Carlson, 1980). An ordinary smooth spline can
+// overshoot past its neighbouring points, which in a grade shows up as tones
+// flipping order. Limiting the tangents keeps each segment between its endpoints.
 
 import type { CurvePoint } from "./params.ts";
 

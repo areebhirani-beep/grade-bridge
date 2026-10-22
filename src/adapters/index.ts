@@ -1,5 +1,3 @@
-/** The adapter registry, plus presets (named looks written in an adapter's vocabulary). */
-
 import { flick } from "./flick.ts";
 import { generic } from "./generic.ts";
 import { primaries } from "./primaries.ts";
@@ -27,7 +25,7 @@ export function isPreset(x: unknown): x is Preset {
   return !!p && typeof p.name === "string" && typeof p.values === "object" && p.values !== null;
 }
 
-/** Turn a preset into GradeParams. Throws on keys the adapter does not know, so typos never pass silently. */
+// Throws on unknown keys so a typo in a preset never silently changes the look.
 export function presetToParams(preset: Preset, adapterId?: string): { params: GradeParams; adapter: Adapter; values: ControlValues } {
   const adapter = getAdapter(adapterId ?? preset.adapter ?? "flick");
   const { values, unknown } = resolveValues(adapter, preset.values);

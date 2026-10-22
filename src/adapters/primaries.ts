@@ -1,11 +1,5 @@
-/**
- * Colorist primaries: Lift / Gamma / Gain per channel, plus Contrast, Pivot
- * and Saturation, the layout of a pro grading panel's primary wheels.
- *
- * This adapter exists to prove the reuse claim with a very different
- * vocabulary. It is about 40 lines, and it converts lift/gamma/gain into the
- * ASC CDL numbers the engine uses with an exact formula (see helpers.ts).
- */
+// Grading-panel primaries (lift/gamma/gain per channel). Here to show that a very
+// different vocabulary still fits in one short file.
 
 import { liftGammaGainToCdl } from "./helpers.ts";
 import type { Adapter, Control } from "./types.ts";
@@ -19,7 +13,7 @@ function wheel(name: "lift" | "gamma" | "gain", label: string, min: number, max:
 
 export const primaries: Adapter = {
   id: "primaries",
-  name: "Colorist primaries (Lift / Gamma / Gain)",
+  name: "Lift / Gamma / Gain",
   description: "Grading-panel wheels: lift, gamma and gain per channel, with contrast, pivot and saturation.",
   controls: [
     ...wheel("lift", "Lift", -0.5, 0.5, 0),

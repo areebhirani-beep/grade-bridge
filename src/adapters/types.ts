@@ -1,10 +1,5 @@
-/**
- * An Adapter translates one app's grade controls into GradeParams.
- *
- * That is the whole reuse story: the color engine, LUT export, preview and
- * CLI never change. To support a new app you describe its sliders here and
- * write one toParams() function.
- */
+// An adapter maps one app's sliders to GradeParams. The engine, export, preview
+// and CLI never change; a new app is a new adapter file.
 
 import type { GradeParams } from "../core/params.ts";
 
@@ -35,15 +30,11 @@ export interface Adapter {
   toParams(values: ControlValues): GradeParams;
 }
 
-/** Every control at its default value. */
 export function defaultValues(adapter: Adapter): ControlValues {
   return Object.fromEntries(adapter.controls.map((c) => [c.key, c.default]));
 }
 
-/**
- * Fill in missing controls with defaults, clamp to each control's range and
- * report keys this adapter does not know (likely a typo in a preset).
- */
+/** Fills defaults, clamps to range, and reports unknown keys (usually a typo in a preset). */
 export function resolveValues(adapter: Adapter, partial: ControlValues): { values: ControlValues; unknown: string[] } {
   const values = defaultValues(adapter);
   const unknown: string[] = [];

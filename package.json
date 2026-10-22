@@ -22,7 +22,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "verify": "node scripts/verify-ffmpeg.ts",
-    "sample": "node scripts/make-sample.ts",
+    "chart": "node scripts/make-chart.ts",
     "cli": "node src/cli.ts"
   },
   "keywords": [

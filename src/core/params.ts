@@ -1,17 +1,9 @@
-/**
- * GradeParams: the one shared language every adapter translates into.
- *
- * An app's sliders (Flick, Lightroom, a colorist's lift/gamma/gain wheels...)
- * are mapped by an adapter into this object. The pipeline only ever sees
- * GradeParams, so the color math is written once and reused everywhere.
- *
- * Every default below is the identity: a grade made of only defaults changes
- * nothing, which the tests check.
- */
+// Adapters translate an app's sliders into GradeParams; the pipeline only reads
+// GradeParams. Every default is the identity (tests check this).
 
 export type RGB = [number, number, number];
 
-/** A curve control point, both values in 0..1 (x = input, y = output). */
+/** [input, output], both 0..1. */
 export type CurvePoint = [number, number];
 
 export interface Curves {
@@ -32,25 +24,13 @@ export interface SplitTone {
   balance: number;
 }
 
-export interface Duotone {
-  /** Hue (degrees) that the darkest tones are mapped to. */
-  darkHue: number;
-  /** Hue (degrees) that the brightest tones are mapped to. */
-  lightHue: number;
-  /** 0..1 mix between the graded image and the two-color version. */
-  amount: number;
-}
-
 export interface GradeParams {
-  // --- Linear-light stage -------------------------------------------------
-  /** Exposure in photographic stops. +1 doubles the light. */
+  /** Stops, applied in linear light. +1 doubles the light. */
   exposure: number;
   /** -1..1. Positive is warmer (more red, less blue). */
   temperature: number;
   /** -1..1. Positive is more magenta, negative more green. */
   tint: number;
-
-  // --- Tone stage (on display-encoded values) -----------------------------
   /** -1..1. Slope around `pivot`: 0.5 means 1.5x the contrast. */
   contrast: number;
   /** The tone (0..1) that contrast rotates around and leaves unchanged. */
@@ -59,24 +39,15 @@ export interface GradeParams {
   highlights: number;
   /** -1..1. Opens up (+) or deepens (-) the dark end only. */
   shadows: number;
-  /**
-   * ASC CDL primaries, per channel: out = (in * slope + offset) ^ power.
-   * This is the industry's interchange format for primary corrections, and
-   * lift/gamma/gain converts into it exactly (see adapters/primaries.ts).
-   */
+  /** ASC CDL per channel: out = (in * slope + offset) ^ power. Lift/gamma/gain converts to it exactly. */
   slope: RGB;
   offset: RGB;
   power: RGB;
-
-  // --- Color stage --------------------------------------------------------
-  /** Multiplier on saturation. 1 = unchanged, 0 = black and white. */
+  /** 1 = unchanged, 0 = black and white. */
   saturation: number;
-  /** -1..1. Saturation boost that mostly skips colors that are already saturated. */
+  /** -1..1. Like saturation, but mostly skips colors that are already saturated. */
   vibrance: number;
   splitTone: SplitTone;
-  duotone: Duotone;
-
-  // --- Finishing ----------------------------------------------------------
   curves: Curves;
   /** 0..1. Crushes everything below this level to black. */
   blackPoint: number;
@@ -104,7 +75,6 @@ export function defaultParams(): GradeParams {
     saturation: 1,
     vibrance: 0,
     splitTone: { shadowHue: 220, shadowAmount: 0, highlightHue: 40, highlightAmount: 0, balance: 0 },
-    duotone: { darkHue: 230, lightHue: 45, amount: 0 },
     curves: {
       master: IDENTITY_CURVE.map((p) => [...p] as CurvePoint),
       red: IDENTITY_CURVE.map((p) => [...p] as CurvePoint),
@@ -116,17 +86,13 @@ export function defaultParams(): GradeParams {
   };
 }
 
-/**
- * Start from the identity and override only what you pass.
- * Nested objects (splitTone, duotone, curves) are merged one level deep.
- */
+/** Identity plus overrides. Nested objects are merged one level deep. */
 export function makeParams(overrides: Partial<GradeParams> = {}): GradeParams {
   const base = defaultParams();
   return {
     ...base,
     ...overrides,
     splitTone: { ...base.splitTone, ...overrides.splitTone },
-    duotone: { ...base.duotone, ...overrides.duotone },
     curves: { ...base.curves, ...overrides.curves },
   };
 }

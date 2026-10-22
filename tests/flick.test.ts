@@ -26,7 +26,7 @@ function changedPaths(p: GradeParams): string[] {
 describe("Flick-style adapter", () => {
   it("uses Flick's documented section names as groups", () => {
     const groups = [...new Set(flick.controls.map((c) => c.group))];
-    expect(groups).toEqual(["Light", "Color", "Curves", "Split Tone", "Duotone"]);
+    expect(groups).toEqual(["Light", "Color", "Curves", "Split Tone"]);
   });
 
   // [control, test value, params it should touch, check on the result]
@@ -57,9 +57,6 @@ describe("Flick-style adapter", () => {
     ["splitHighlightHue", 20, ["splitTone.highlightHue"], (p) => expect(p.splitTone.highlightHue).toBe(20)],
     ["splitHighlightAmount", 30, ["splitTone.highlightAmount"], (p) => expect(p.splitTone.highlightAmount).toBeCloseTo(0.3)],
     ["splitBalance", -50, ["splitTone.balance"], (p) => expect(p.splitTone.balance).toBeCloseTo(-0.5)],
-    ["duotoneDarkHue", 300, ["duotone.darkHue"], (p) => expect(p.duotone.darkHue).toBe(300)],
-    ["duotoneLightHue", 60, ["duotone.lightHue"], (p) => expect(p.duotone.lightHue).toBe(60)],
-    ["duotoneAmount", 80, ["duotone.amount"], (p) => expect(p.duotone.amount).toBeCloseTo(0.8)],
   ];
 
   it("the table covers every control", () => {

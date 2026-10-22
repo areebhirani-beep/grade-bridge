@@ -1,14 +1,6 @@
-/**
- * A 3D LUT is the grade "baked" into a cube of colors.
- *
- * We walk a size x size x size grid of input colors, run each through the
- * grade, and store the results. Any editor can then grade a pixel without
- * knowing our math: it finds the pixel's spot in the cube and blends the
- * 8 surrounding stored colors (trilinear interpolation).
- *
- * Layout: red changes fastest, then green, then blue, the same order a
- * .cube file is written in, so serializing is a straight copy.
- */
+// The grade sampled on a size^3 grid of input colors. An editor grades a pixel by
+// blending the 8 stored colors around it. Red changes fastest, the same order as
+// a .cube file, so serializing is a straight copy.
 
 import { compileGrade } from "./pipeline.ts";
 import type { GradeParams, RGB } from "./params.ts";
@@ -17,12 +9,11 @@ export interface Lut3D {
   size: number;
   /** size^3 * 3 floats, index = ((b * size + g) * size + r) * 3. */
   data: Float32Array;
-  /** Input range the cube covers. Almost always 0..1. */
   domainMin: RGB;
   domainMax: RGB;
 }
 
-export const LUT_SIZES = [17, 33, 65] as const;
+export const LUT_SIZES = [33, 65] as const;
 
 export function buildLut(params: GradeParams, size = 33): Float32Array {
   if (!Number.isInteger(size) || size < 2 || size > 256) throw new Error(`LUT size must be an integer from 2 to 256, got ${size}`);
@@ -45,7 +36,7 @@ export function toLut3D(params: GradeParams, size = 33): Lut3D {
   return { size, data: buildLut(params, size), domainMin: [0, 0, 0], domainMax: [1, 1, 1] };
 }
 
-/** Apply a LUT to one color with trilinear interpolation, the way editors do. */
+/** Trilinear lookup, as editors do it. */
 export function sampleLut(lut: Pick<Lut3D, "size" | "data"> & Partial<Lut3D>, rgb: RGB): RGB {
   const { size, data } = lut;
   const min = lut.domainMin ?? [0, 0, 0];

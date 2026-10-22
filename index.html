@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Export a color grade as a .cube LUT for DaVinci Resolve, Premiere Pro, Final Cut Pro, CapCut, OBS and Photoshop." />
+    <title>grade-bridge</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%2335c2c9'/%3E%3Cstop offset='1' stop-color='%23ffb547'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='3' y='3' width='26' height='26' rx='7' fill='url(%23g)'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">grade-bridge</span>
+      </div>
+
+      <div class="pickers">
+        <label class="field">
+          <span>Controls</span>
+          <select id="adapter-select" aria-label="Control set (adapter)"></select>
+        </label>
+        <label class="field">
+          <span>Look</span>
+          <select id="preset-select" aria-label="Preset look"></select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="import-btn" class="btn ghost" title="View any .cube LUT (I)">Import .cube</button>
+        <button type="button" id="share-btn" class="btn ghost" title="Copy a link to this look (L)">Copy link</button>
+        <div class="export-group">
+          <select id="size-select" aria-label="LUT size" title="Grid size: 33 is standard, 65 is finer">
+            <option value="33">33³</option>
+            <option value="65">65³</option>
+          </select>
+          <button type="button" id="export-btn" class="btn primary" title="Download the .cube (E)">Export .cube</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="viewer" id="viewer" aria-label="Preview">
+        <div class="stage" id="stage">
+          <canvas id="canvas" aria-label="Graded preview"></canvas>
+          <div class="split" id="split" role="slider" tabindex="0" aria-label="Before and after divider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <span class="split-knob" aria-hidden="true"></span>
+          </div>
+          <span class="tag tag-before" id="tag-before">Before</span>
+          <span class="tag tag-after" id="tag-after">After</span>
+          <div class="hint" id="chart-hint">Test chart. Drop your own image or video anywhere to grade it.</div>
+          <div class="fallback" id="fallback" hidden></div>
+        </div>
+
+        <div class="drop" id="drop" hidden>
+          <div class="drop-inner">
+            <strong>Drop to load</strong>
+            <span>An image, a short video, or a .cube LUT</span>
+          </div>
+        </div>
+
+        <footer class="viewer-bar">
+          <div class="viewer-actions">
+            <button type="button" id="open-btn" class="btn small" title="Open an image or video (O)">Open media</button>
+            <button type="button" id="sample-btn" class="btn small ghost">Test chart</button>
+            <button type="button" id="play-btn" class="btn small ghost" hidden>Pause</button>
+            <button type="button" id="compare-btn" class="btn small ghost" aria-pressed="true" title="Toggle before/after (B)">Before / After</button>
+          </div>
+          <div class="status" id="status" aria-live="polite"></div>
+        </footer>
+      </section>
+
+      <aside class="sidebar" aria-label="Grade controls">
+        <div class="sidebar-head">
+          <p class="adapter-desc" id="adapter-desc"></p>
+          <div class="imported" id="imported-banner" hidden>
+            <div>
+              <strong id="imported-name"></strong>
+              <span id="imported-meta"></span>
+            </div>
+            <button type="button" class="btn small" id="imported-close">Back to my grade</button>
+          </div>
+        </div>
+        <div class="controls" id="controls"></div>
+        <div class="sidebar-foot">
+          <button type="button" class="btn small ghost" id="reset-btn" title="Reset every control (Shift+R)">Reset all</button>
+          <button type="button" class="btn small ghost" id="help-btn" title="Keyboard shortcuts (?)">Shortcuts</button>
+        </div>
+      </aside>
+    </main>
+
+    <dialog id="help" aria-label="Keyboard shortcuts">
+      <h2>Keyboard</h2>
+      <dl>
+        <dt><kbd>B</kbd></dt><dd>Toggle before / after</dd>
+        <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Move the divider (when focused)</dd>
+        <dt><kbd>E</kbd></dt><dd>Export .cube</dd>
+        <dt><kbd>I</kbd></dt><dd>Import a .cube to view</dd>
+        <dt><kbd>O</kbd></dt><dd>Open an image or video</dd>
+        <dt><kbd>L</kbd></dt><dd>Copy a share link</dd>
+        <dt><kbd>Space</kbd></dt><dd>Play / pause video</dd>
+        <dt><kbd>Shift</kbd> <kbd>R</kbd></dt><dd>Reset all controls</dd>
+        <dt>Double-click</dt><dd>Reset one slider</dd>
+        <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Nudge a typed value (<kbd>Shift</kbd> for 10x)</dd>
+      </dl>
+      <form method="dialog"><button class="btn primary">Done</button></form>
+    </dialog>
+
+    <input type="file" id="media-input" accept="image/*,video/*" hidden />
+    <input type="file" id="cube-input" accept=".cube" hidden />
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/web/main.ts"></script>
+  </body>
+</html>

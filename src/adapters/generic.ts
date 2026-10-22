@@ -1,8 +1,5 @@
-/**
- * A Lightroom-like vocabulary: the names most photo and video apps copy
- * (Basic panel, parametric Tone Curve, Color Grading wheels).
- * Use it as the default for an app that has no adapter of its own yet.
- */
+// Lightroom-style names, which most photo and video apps copy. A starting point
+// for an app with no adapter of its own.
 
 import { liftGammaGainToCdl, parametricCurve, pct } from "./helpers.ts";
 import type { Adapter, Control } from "./types.ts";
