@@ -1,0 +1,16 @@
+{
+  "name": "Cool Night",
+  "description": "Day-for-night: underexposed, blue moonlight shadows, muted color.",
+  "adapter": "flick",
+  "values": {
+    "exposure": -0.6,
+    "temperature": -45,
+    "tint": 8,
+    "contrast": 15,
+    "highlights": -20,
+    "saturation": -25,
+    "curveMidtones": -10,
+    "splitShadowHue": 220,
+    "splitShadowAmount": 50
+  }
+}

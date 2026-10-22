@@ -1,0 +1,16 @@
+{
+  "name": "Soft Pastel",
+  "description": "Airy and low-contrast, written with the photo-editor adapter to show presets are not tied to one app.",
+  "adapter": "generic",
+  "values": {
+    "exposure": 0.3,
+    "contrast": -25,
+    "highlights": -30,
+    "shadows": 30,
+    "vibrance": -10,
+    "saturation": -15,
+    "curveShadows": 25,
+    "gradeHighlightHue": 330,
+    "gradeHighlightSat": 20
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Mono Noir",
+  "description": "Black and white with deep blacks and bright, clean highlights.",
+  "adapter": "flick",
+  "values": {
+    "saturation": -100,
+    "contrast": 40,
+    "blacks": -15,
+    "shadows": -10,
+    "curveHighlights": 10
+  }
+}

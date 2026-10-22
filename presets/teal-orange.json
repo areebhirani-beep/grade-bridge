@@ -1,0 +1,17 @@
+{
+  "name": "Teal & Orange",
+  "description": "Blockbuster contrast: cool teal shadows against warm skin and highlights.",
+  "adapter": "flick",
+  "values": {
+    "temperature": 8,
+    "contrast": 22,
+    "highlights": -15,
+    "vibrance": 20,
+    "curveShadows": -8,
+    "splitShadowHue": 190,
+    "splitShadowAmount": 50,
+    "splitHighlightHue": 30,
+    "splitHighlightAmount": 40,
+    "splitBalance": 10
+  }
+}

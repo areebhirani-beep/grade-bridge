@@ -1,0 +1,14 @@
+{
+  "name": "Bleach Bypass",
+  "description": "Silver-retention film look: hard contrast, metallic, most of the color drained out.",
+  "adapter": "flick",
+  "values": {
+    "contrast": 45,
+    "highlights": -10,
+    "shadows": -20,
+    "whites": 10,
+    "blacks": -15,
+    "saturation": -55,
+    "curveMidtones": -5
+  }
+}

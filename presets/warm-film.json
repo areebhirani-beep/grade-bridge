@@ -1,0 +1,17 @@
+{
+  "name": "Warm Film",
+  "description": "Faded print stock: golden highlights, soft milky blacks, gentle contrast.",
+  "adapter": "flick",
+  "values": {
+    "temperature": 40,
+    "tint": 5,
+    "contrast": -10,
+    "saturation": -5,
+    "curveHighlights": -15,
+    "curveRed": 10,
+    "curveBlue": -10,
+    "fade": 25,
+    "splitHighlightHue": 40,
+    "splitHighlightAmount": 40
+  }
+}
