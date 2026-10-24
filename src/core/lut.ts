@@ -65,3 +65,33 @@ export function sampleLut(lut: Pick<Lut3D, "size" | "data"> & Partial<Lut3D>, rg
   }
   return out;
 }
+
+/**
+ * Blends a LUT toward the identity: amount 1 keeps the LUT, 0 gives "no grade".
+ * Trilinear sampling is linear in the stored values and samples the identity
+ * grid back to the input color, so sampling the result equals
+ * mix(input, sampleLut(lut, input), amount), the same mix the preview shader
+ * does. That is why an exported mixed LUT matches the preview.
+ */
+export function mixWithIdentity(
+  data: Float32Array,
+  size: number,
+  amount: number,
+  domainMin: RGB = [0, 0, 0],
+  domainMax: RGB = [1, 1, 1],
+): Float32Array {
+  const k = Math.min(1, Math.max(0, amount));
+  if (k === 1) return data.slice();
+  const out = new Float32Array(data.length);
+  const n = size - 1;
+  for (let b = 0, i = 0; b < size; b++)
+    for (let g = 0; g < size; g++)
+      for (let r = 0; r < size; r++, i += 3) {
+        const id = [r, g, b];
+        for (let c = 0; c < 3; c++) {
+          const identity = domainMin[c] + (id[c] / n) * (domainMax[c] - domainMin[c]);
+          out[i + c] = identity + (data[i + c] - identity) * k;
+        }
+      }
+  return out;
+}

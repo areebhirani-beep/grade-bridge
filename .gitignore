@@ -4,3 +4,4 @@ dist-node/
 verify-out/
 *.log
 .DS_Store
+local-media/
