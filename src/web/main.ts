@@ -2,6 +2,7 @@
 // Export        -> the same LUT -> mixWithIdentity(Intensity) -> .cube text -> download
 // Looks + scopes -> the same LUTs applied on the CPU to a downscaled copy of the frame
 
+import { detectTransfer } from "./hdr";
 import "./styles.css";
 import { ADAPTERS, defaultValues, getAdapter, presetToParams, type Adapter, type Control, type ControlValues, type Preset } from "../adapters/index.ts";
 import { parseCube, serializeCube, type CubeFile } from "../core/cube.ts";
@@ -453,6 +454,8 @@ function stopVideo(next?: Media): void {
 }
 
 function loadImage(url: string, name: string, revoke = false): Promise<void> {
+  hdrCheckFor = null;
+  showHdrNote(null);
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.decoding = "async";
@@ -467,6 +470,11 @@ function loadImage(url: string, name: string, revoke = false): Promise<void> {
 }
 
 function loadVideo(file: File): void {
+  showHdrNote(null);
+  hdrCheckFor = file;
+  void detectTransfer(file).then((t) => {
+    if (t !== "sdr" && hdrCheckFor === file) showHdrNote(t);
+  });
   const video = document.createElement("video");
   video.muted = true;
   video.loop = state.loop;
@@ -906,6 +914,22 @@ function closeImported(redraw = true): void {
 // ---------- Chrome: toast, popover, drop, keyboard ----------
 
 let toastTimer = 0;
+let hdrCheckFor: File | null = null;
+
+function showHdrNote(kind: "hlg" | "pq" | null): void {
+  const el = $("hdr-note");
+  if (!kind) {
+    el.hidden = true;
+    return;
+  }
+  $("hdr-text").textContent =
+    `This is HDR video (${kind === "hlg" ? "HLG" : "PQ"}). Browsers don't convert HDR to standard color reliably, ` +
+    "so the original here looks colder and flatter than it really is, and a .cube built for standard (Rec.709) video " +
+    "won't match on it in your editor either. Grade an SDR copy instead. On iPhone, new clips record in SDR with " +
+    "Settings > Camera > Record Video > HDR Video turned off.";
+  el.hidden = false;
+}
+
 function toast(message: string): void {
   const el = $("toast");
   el.textContent = message;
@@ -1058,6 +1082,7 @@ function boot(): void {
   wireWipe();
   wireTransport();
   wirePopover();
+  $("hdr-close").addEventListener("click", () => showHdrNote(null));
   wireDrop();
   wireKeyboard();
   new ResizeObserver(() => {

@@ -117,3 +117,6 @@ Yes. Intensity is baked into the `.cube`, so a look at 60% in the app is the sam
 
 **10. "Are the scopes real, or decoration?"**
 They are real counts of the graded pixels, on a 640x360 copy of the frame. The waveform runs 0 to 100 for code values 0 to 255, the vectorscope has the 75% color-bar boxes and the skin-tone line, and the binning is unit tested against known inputs. The limit to say out loud: they read a downscaled copy, so a single bright pixel can be missed, and they are not a replacement for scopes on a calibrated full-resolution signal.
+
+**11. "Most of our users shoot on iPhone. Does it work on their clips?"**
+Only on SDR clips, and the app says so. iPhones record HDR (HLG) by default, and browsers don't convert HDR to standard color reliably, so an HDR clip shows up colder and flatter than it really is. I found this testing my own footage. The app reads the color tag inside the file (the `colr` box in `moov`, transfer code 18 means HLG) and shows a notice telling the user to grade an SDR copy. A real fix would be a proper HLG to Rec.709 conversion before the LUT, which is the next thing I would build.

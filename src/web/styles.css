@@ -480,3 +480,19 @@ dialog form { display: flex; justify-content: flex-end; margin-top: 10px; }
   *, body.editing .app { transition: none !important; animation: none !important; }
 }
 input[type="range"].scrubber:hover::-webkit-slider-thumb { background: var(--accent); }
+
+/* ---------- HDR notice ---------- */
+
+.hdr-note {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  z-index: 5; display: flex; gap: 14px; align-items: flex-start;
+  width: min(640px, calc(100% - 24px)); padding: 10px 12px;
+  background: var(--chrome); border: 1px solid var(--rule); border-left: 2px solid var(--accent);
+  color: var(--text); font-size: 12px; line-height: 1.5;
+}
+.hdr-note[hidden] { display: none; }
+.hdr-close {
+  flex: none; background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--text-2); font: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
+.hdr-close:hover { color: var(--text); }

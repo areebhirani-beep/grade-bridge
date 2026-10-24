@@ -4,7 +4,7 @@ When you move an edit from one app to a pro editor through a project file (XML o
 
 **Limit to know up front:** the Flick adapter uses the control names from Flick's public docs, not Flick's internal color math. A look built here will not match Flick pixel for pixel. Flick could get an exact match by passing its own grade function to `buildLut`, which is about ten lines of code (see "Exact match for an app's own grade" below).
 
-![The editor: a graded frame with a before/after wipe, the look strip built from the same frame, the RGB parade, and the controls](docs/screen-editor-scene.jpg)
+![The editor on real iPhone footage: Warm Film with a before/after wipe, the look strip built from the same frame, the waveform, and the Flick-style controls](docs/screen-editor-scene.jpg)
 
 ## What it does
 
@@ -50,7 +50,7 @@ These menu paths are from each app's documentation. The app shows the same table
 ```bash
 npm install
 npm run dev       # app at http://localhost:5173
-npm test          # 78 unit tests
+npm test          # 82 unit tests
 npm run verify    # export presets, apply them with ffmpeg, compare (needs ffmpeg)
 npm run build     # static app in dist/, CLI in dist-node/
 ```
@@ -118,6 +118,14 @@ To pass, the mean must be under 1.5 levels and the max at most 6 levels on every
 
 **Negative control:** the script also writes the same LUT with its axes swapped, which is the most common `.cube` bug. That file is off by a mean of 35.0 levels (max 137), which shows the check can fail.
 
+### On real footage
+
+The same check on a real clip: an iPhone video (converted to SDR), graded by ffmpeg from a 65³ Warm Film `.cube` exported by the CLI. Left is the original frame, right is ffmpeg applying the file. This is the path an editor takes, with ffmpeg standing in for it.
+
+![Real iPhone frame: original, and Warm Film applied by ffmpeg from the exported .cube](docs/real-footage.jpg)
+
+### Test chart
+
 Top: Teal & Orange. Bottom: Mono Noir. Each row is original | ffmpeg with the exported `.cube` | exact math:
 
 ![Test chart graded by ffmpeg from the exported .cube](docs/ffmpeg-verify.png)
@@ -151,6 +159,7 @@ The scopes are computed from a 640x360 copy of the graded frame, graded on the C
 ## Limits
 
 - **A LUT only carries color.** It maps each input color to one output color. Anything that looks at neighbouring pixels, position or time cannot go in a LUT: blur, glow, grain, sharpening, vignettes, keying, transitions. Those need the destination editor's own effects.
+- **SDR only. iPhone HDR video looks wrong in the browser.** iPhones record HDR (HLG) by default. Browsers pass that footage to WebGL without a reliable HDR to Rec.709 conversion, so it shows up colder and flatter than it really is, and a Rec.709 `.cube` won't match on it in an editor either. The app reads the file's color tags (the `colr` box inside `moov`) and shows a notice when a clip is HLG or PQ. To grade iPhone footage, turn off Settings > Camera > Record Video > HDR Video, or convert an SDR copy first (on a Mac: `avconvert -s in.mov -o out.mov -p PresetHighestQuality`).
 - **Display-referred.** Values pushed past white clip, as they do in phone editors.
 - **Adapters approximate.** Slider names and ranges inside Flick's Light/Color/Curves sections are not in Flick's docs, so they are conventional guesses.
 - **Video is preview only.** You export the `.cube` and render the video in your editor. Playback is muted, and the browser decides which codecs it can open (H.264 MP4 and WebM work in Chrome; ProRes and most log camera files do not).
